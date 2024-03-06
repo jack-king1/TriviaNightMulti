@@ -5,33 +5,55 @@ const io = require("socket.io")(5000, {
 });
 
 //player object
-const currentPlayers = [];
+const connectectClient = [];
 
-io.on("connection", async (socket) => {
+io.on("connection", (socket) => {
     console.log(socket.id);
     //functionality
     //Create room was called
-    socket.on("create-room", (roomId, playerName, cb) => {
+    socket.on("create-room", async (roomId, playerName, cb) => {
         socket.join(roomId);
+        socket.username = playerName;
+        socket.isHost = true;
         cb(`Joined ${roomId}`);
         console.log("Possible room names: ", io.sockets.adapter.rooms);
-        currentPlayers.push({ id: socket.id, pName: playerName });
+
+        let playerList = await GetPlayerList(roomId);
+        console.log("@playerList before emit: ", playerList);
+        io.in(roomId).emit("player-list", playerList);
     });
 
     //check to see if room exists, then join it and send callback.
-    socket.on("join-room", (roomId, playerName, cb) => {
-        console.log("Possible room names: ", io.sockets.adapter.rooms);
+    socket.on("join-room", async (roomId, playerName, cb) => {
         if (!io.sockets.adapter.rooms.get(roomId)) {
             cb(`Room ${roomId} doesn't exist.`);
             return;
         }
         socket.join(roomId);
+        socket.username = playerName;
+        socket.isHost = false;
         cb(`Joined ${roomId}`);
+        console.log("Possible room names: ", io.sockets.adapter.rooms);
         //new player has joined, sync data to all clients.
         //create player
-        currentPlayers.push({ id: socket.id, pName: playerName });
 
         //emit to all sockets that player joined
-        socket.to(roomId).emit("player-joined", currentPlayers);
+        let playerList = await GetPlayerList(roomId);
+        console.log("@playerList before emit: ", playerList);
+        io.in(roomId).emit("player-list", playerList);
     });
 });
+
+async function GetPlayerList(roomId) {
+    let sockets = await io.in(roomId).fetchSockets();
+    let playerList = [];
+    sockets.map((val, key) => {
+        playerList.push({
+            username: val.username,
+            socket: val.id,
+            isHost: val.isHost,
+        });
+    });
+    console.log(playerList);
+    return playerList;
+}

@@ -1,10 +1,12 @@
 import { useContext, useState } from "react";
 import SocketController from "../../API/WebSocket";
 import { NetworkedPlayer } from "../../Multiplayer/PlayerObject";
+import { SocketContext } from "../../SocketProvider";
 
 function StartScreen(props) {
     const [nameInput, setNameInput] = useState(null); //the player name the player wants to use.
     const [lobbyName, setLobbyNameInput] = useState(null); //the lobby the player is trying to joim.
+    const socketContext = useContext(SocketContext);
 
     //depending on if the player has entered a name change style of the button.
     function GetButtonStyle() {
@@ -27,13 +29,14 @@ function StartScreen(props) {
         //Create multiplayer room
         //create new networked player.
         //SocketController.CreateRoom(nameInput, nameInput, ChangeScreen);
+        socketContext.CreateRoom(nameInput, nameInput, ChangeScreen);
     }
 
     //for when a player wants to join a friend
     function JoinMultiplayerLobby() {
         if (nameInput == null) return;
         //Join existing lobby.
-        //SocketController.JoinRoom(lobbyName, nameInput, ChangeScreen);
+        socketContext.JoinRoom(lobbyName, nameInput, ChangeScreen);
     }
 
     //callback for when player has joined a room/lobby
