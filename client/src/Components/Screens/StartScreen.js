@@ -26,18 +26,19 @@ function StartScreen(props) {
         if (nameInput == null) return;
         //Create multiplayer room
         //create new networked player.
-        SocketController.CreateRoom(nameInput, nameInput, ChangeScreen);
+        //SocketController.CreateRoom(nameInput, nameInput, ChangeScreen);
     }
 
     //for when a player wants to join a friend
     function JoinMultiplayerLobby() {
         if (nameInput == null) return;
         //Join existing lobby.
-        SocketController.JoinRoom(lobbyName, nameInput, ChangeScreen);
+        //SocketController.JoinRoom(lobbyName, nameInput, ChangeScreen);
     }
 
     //callback for when player has joined a room/lobby
     function ChangeScreen(msg) {
+        //SocketController.OnJoinRoomSuccess(lobbyName);
         console.log(msg);
         props.lobbyaction(nameInput);
     }

@@ -7,7 +7,7 @@ const io = require("socket.io")(5000, {
 //player object
 const currentPlayers = [];
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
     console.log(socket.id);
     //functionality
     //Create room was called
@@ -32,6 +32,6 @@ io.on("connection", (socket) => {
         currentPlayers.push({ id: socket.id, pName: playerName });
 
         //emit to all sockets that player joined
-        io.sockets.emit("player-joined", currentPlayers);
+        socket.to(roomId).emit("player-joined", currentPlayers);
     });
 });
