@@ -5,6 +5,7 @@ import BooleanLayout from "./Questions/BooleanLayout";
 import MultipleLayout from "./Questions/MultipleLayout";
 import QuizScreen from "./Screens/QuizScreen";
 import EndGameScreen from "./Screens/EndGameScreen";
+import LobbyScreen from "./Screens/LobbyScreen";
 
 function QuestionContainer(props) {
     const triviaContext = useContext(TriviaContext);
@@ -17,11 +18,19 @@ function QuestionContainer(props) {
         triviaContext.PlayerName(playerName);
     }
 
+    function GoToLobby(playerName) {
+        triviaContext.SetGameState("LOBBY");
+        triviaContext.PlayerName(playerName);
+    }
+
     function GetScreen() {
         switch (triviaContext.gameState) {
             case "START":
-                return <StartScreen action={StartQuiz} />;
-
+                return (
+                    <StartScreen action={StartQuiz} lobbyaction={GoToLobby} />
+                );
+            case "LOBBY":
+                return <LobbyScreen />;
             case "GAME":
                 return <QuizScreen colours={colours} />;
             case "END":
