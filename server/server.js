@@ -13,11 +13,13 @@ io.on("connection", (socket) => {
     //Create room was called
     socket.on("create-room", async (roomId, playerName, cb) => {
         socket.join(roomId);
+        //assign socket a name and isHost
         socket.username = playerName;
         socket.isHost = true;
         cb(`Joined ${roomId}`);
         console.log("Possible room names: ", io.sockets.adapter.rooms);
 
+        //get all players from room then emit to all sockets in that room
         let playerList = await GetPlayerList(roomId);
         console.log("@playerList before emit: ", playerList);
         io.in(roomId).emit("player-list", playerList);
@@ -30,6 +32,7 @@ io.on("connection", (socket) => {
             return;
         }
         socket.join(roomId);
+        //assign socket a name and isHost
         socket.username = playerName;
         socket.isHost = false;
         cb(`Joined ${roomId}`);
@@ -37,7 +40,7 @@ io.on("connection", (socket) => {
         //new player has joined, sync data to all clients.
         //create player
 
-        //emit to all sockets that player joined
+        //get all players from room then emit to all sockets in that room
         let playerList = await GetPlayerList(roomId);
         console.log("@playerList before emit: ", playerList);
         io.in(roomId).emit("player-list", playerList);
