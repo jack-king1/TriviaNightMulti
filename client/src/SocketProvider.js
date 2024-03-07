@@ -1,11 +1,13 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import { io } from "socket.io-client";
+import { TriviaContext } from "./TriviaContexts";
 
 export const SocketContext = createContext();
 
 const socket = io("http://localhost:5000");
 
 export const SocketProvider = ({ children }) => {
+    const triviaContext = useContext(TriviaContext);
     const [roomId, setRoomId] = useState("");
     const [playerList, setPlayerList] = useState([]);
     const [eventListeners, setEventListeners] = useState({});
@@ -35,11 +37,25 @@ export const SocketProvider = ({ children }) => {
     socket.on("player-list", (playerList) => {
         setPlayerList(playerList);
         console.log("@player-list: ", playerList);
+        //new player joined lobby, sync quizz questions.
+        if (mySocketPlayer.isHost) {
+            socket.emit("sync-questions", triviaContext.trivia);
+        }
+    });
+
+    socket.on("quiz-questions", (questions) => {
+        triviaContext.setTrivia(questions);
+    });
+
+    socket.on("enter-game-scene", (questions) => {
+        triviaContext.SetGameState("GAME");
+        console.log("Start game... ");
     });
 
     //User Events
     //Create Room - roomId to join, function when complete.
     function CreateRoom(roomId, playerName, callback) {
+        console.log("creating room.");
         setRoomId(roomId);
         socket.emit("create-room", roomId, playerName, callback);
     }
@@ -53,6 +69,11 @@ export const SocketProvider = ({ children }) => {
         //Client joined room successfully - save roosssssssssssssssssmID.
         console.log("My socket player: ", callbackdata.myplayer);
         setMySocketPlayer(callbackdata.myplayer);
+    }
+
+    function StartGame() {
+        console.log("Host starting game...");
+        socket.emit("start-game", roomId);
     }
 
     function isHost() {
@@ -85,6 +106,7 @@ export const SocketProvider = ({ children }) => {
         setRoomId,
         OnJoinRoomSuccess,
         isHost,
+        StartGame,
     };
 
     return (

@@ -38,7 +38,7 @@ export const TriviaProvider = ({ children }) => {
             }
         }
         // Call the async function
-        fetchData();
+        //fetchData();
     }, []);
 
     useEffect(() => {
@@ -94,6 +94,18 @@ export const TriviaProvider = ({ children }) => {
         UserGuess("TIMERANOUT!!!!!!");
     }
 
+    async function FetchMultiplayerTrivia() {
+        try {
+            const response = await fetchTrivia(totalQuestionsAmount);
+            // Do something with the data
+            console.log(response);
+            setTrivia(response);
+            //setReloaded(true);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
+
     // Function to subscribe to an event
     const subscribe = (eventName, callback) => {
         setEventListeners((prevListeners) => ({
@@ -117,6 +129,7 @@ export const TriviaProvider = ({ children }) => {
     }
 
     //Context funcionality
+    //shuffle all answers to current questions.
     function ConfigurePossibleAnswers() {
         try {
             let shuffledAnswers =
@@ -164,6 +177,7 @@ export const TriviaProvider = ({ children }) => {
     }
 
     function GetCurrentQuestion() {
+        console.log("GETTING QUESTIONS: ", trivia);
         console.log(
             "Getting Question: ",
             trivia.results[playerQuestionCount],
@@ -182,12 +196,20 @@ export const TriviaProvider = ({ children }) => {
             console.log("Getting Answers: ", possibleAnswers);
             return possibleAnswers;
         } catch {
-            return ["Im Gay", "You're Gay", "Were Gay", "No ones gay!"];
+            return ["1", "2", "3", "4"];
         }
     }
 
     function PlayerName(name) {
         setPlayerName(name);
+    }
+
+    async function GetTrivia() {
+        if (trivia != undefined) {
+            return trivia;
+        } else {
+            return null;
+        }
     }
     // Value provided by the AuthContext
     const triviaContextValue = {
@@ -201,6 +223,7 @@ export const TriviaProvider = ({ children }) => {
         maxTimer,
         playerName,
         GetPossibleAnswers,
+        GetTrivia,
         GetCurrentQuestion,
         GetNewQuestions,
         subscribe,
@@ -211,6 +234,8 @@ export const TriviaProvider = ({ children }) => {
         TimeOut,
         setTimeLeft,
         PlayerName,
+        setTrivia,
+        FetchMultiplayerTrivia,
     };
 
     return (

@@ -26,10 +26,11 @@ io.on("connection", (socket) => {
                 isHost: socket.isHost,
             },
         });
-        console.log("Possible room names: ", io.sockets.adapter.rooms);
+        //console.log("Possible room names: ", io.sockets.adapter.rooms);
 
         //get all players from room then emit to all sockets in that room
         let playerList = await GetPlayerList(roomId);
+        console.log("Player List: ", playerList);
         io.in(roomId).emit("player-list", playerList);
     });
 
@@ -52,22 +53,26 @@ io.on("connection", (socket) => {
                 isHost: socket.isHost,
             },
         });
-        console.log("Possible room names: ", io.sockets.adapter.rooms);
+        //console.log("Possible room names: ", io.sockets.adapter.rooms);
         //new player has joined, sync data to all clients.
         //create player
 
         //get all players from room then emit to all sockets in that room
         let playerList = await GetPlayerList(roomId);
+        console.log("Player List: ", playerList);
         io.in(roomId).emit("player-list", playerList);
     });
 
     //sync questions from host to all connected room clients
     socket.on("sync-questions", (questions) => {
-        io.in(roomId).emit("quiz-questions");
+        //emit to all]
+        console.log("syncing questions...");
+        socket.broadcast.emit("quiz-questions", questions);
     });
 
     //function for host to start game for a room.
     socket.on("start-game", async (roomId, cb) => {
+        console.log("starting game...");
         io.in(roomId).emit("enter-game-scene");
     });
 

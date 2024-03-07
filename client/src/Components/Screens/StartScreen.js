@@ -2,11 +2,13 @@ import { useContext, useState } from "react";
 import SocketController from "../../API/WebSocket";
 import { NetworkedPlayer } from "../../Multiplayer/PlayerObject";
 import { SocketContext } from "../../SocketProvider";
+import { TriviaContext } from "../../TriviaContexts";
 
 function StartScreen(props) {
     const [nameInput, setNameInput] = useState(null); //the player name the player wants to use.
     const [lobbyName, setLobbyNameInput] = useState(null); //the lobby the player is trying to joim.
     const socketContext = useContext(SocketContext);
+    const triviaContext = useContext(TriviaContext);
 
     //depending on if the player has entered a name change style of the button.
     function GetButtonStyle() {
@@ -29,7 +31,9 @@ function StartScreen(props) {
         //Create multiplayer room
         //create new networked player.
         //SocketController.CreateRoom(nameInput, nameInput, ChangeScreen);
+        console.log("Creating lobby...");
         socketContext.CreateRoom(nameInput, nameInput, OnJoinSuccess);
+        triviaContext.FetchMultiplayerTrivia();
     }
 
     //for when a player wants to join a friend

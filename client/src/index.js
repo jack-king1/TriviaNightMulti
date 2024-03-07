@@ -8,9 +8,9 @@ import { SocketProvider } from "./SocketProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <SocketProvider>
-        <TriviaProvider>
+    <TriviaProvider>
+        <SocketProvider>
             <App />
-        </TriviaProvider>
-    </SocketProvider>
+        </SocketProvider>
+    </TriviaProvider>
 );

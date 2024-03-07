@@ -1,9 +1,12 @@
 import { useState, useEffect, useContext } from "react";
-import SocketController from "../../API/WebSocket";
 import { SocketContext } from "../../SocketProvider";
 function LobbyScreen() {
     //set up event listener to retrieve
     const socketContext = useContext(SocketContext);
+
+    function StartGame() {
+        socketContext.StartGame();
+    }
 
     const colours = ["red", "green", "blue", "yellow"];
 
@@ -27,7 +30,10 @@ function LobbyScreen() {
                 })}
                 {socketContext.isHost() && (
                     <div className="w-full mx-auto flex justify-center items-baseline">
-                        <button className="font-kanit text-3xl w-full h-20 bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded">
+                        <button
+                            onClick={() => StartGame()}
+                            className="font-kanit text-3xl w-full h-20 bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded"
+                        >
                             Start Game
                         </button>
                     </div>
