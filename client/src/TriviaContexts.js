@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { fetchTrivia } from "./API/TriviaAPI";
+import { SocketContext } from "./SocketProvider";
 
 // Create the AuthContext
 export const TriviaContext = createContext();
@@ -13,13 +14,13 @@ export const TriviaProvider = ({ children }) => {
     const [possibleAnswers, setPossibleAnswers] = useState([]);
     const [eventListeners, setEventListeners] = useState({});
     const [score, setScore] = useState(0);
-    const totalQuestionsAmount = 10;
+    const totalQuestionsAmount = 1;
     const [gameState, SetGameState] = useState("START");
     const [playerName, setPlayerName] = useState("");
     const [multiplayerGame, setMultiplayerGame] = useState(false);
+    const [multiplayerScores, setMultiplayerScores] = useState([]);
 
     //timers
-
     const maxTimer = 20;
     const [timeLeft, setTimeLeft] = useState(maxTimer);
 
@@ -170,6 +171,8 @@ export const TriviaProvider = ({ children }) => {
         }
         //check player question count vs totalQuestions and take to end game screen.
         if (playerQuestionCount == totalQuestionsAmount - 1) {
+            //push my own score onto multiplayer scores
+
             SetGameState("END");
         } else {
             setPlayerQuestionCount(playerQuestionCount + 1);
@@ -177,13 +180,13 @@ export const TriviaProvider = ({ children }) => {
     }
 
     function GetCurrentQuestion() {
-        console.log("GETTING QUESTIONS: ", trivia);
-        console.log(
-            "Getting Question: ",
-            trivia.results[playerQuestionCount],
-            "Count: ",
-            playerQuestionCount
-        );
+        //console.log("GETTING QUESTIONS: ", trivia);
+        // console.log(
+        //     "Getting Question: ",
+        //     trivia.results[playerQuestionCount],
+        //     "Count: ",
+        //     playerQuestionCount
+        // );
         try {
             return trivia.results[playerQuestionCount];
         } catch {
@@ -193,7 +196,7 @@ export const TriviaProvider = ({ children }) => {
 
     function GetPossibleAnswers() {
         try {
-            console.log("Getting Answers: ", possibleAnswers);
+            //console.log("Getting Answers: ", possibleAnswers);
             return possibleAnswers;
         } catch {
             return ["1", "2", "3", "4"];
@@ -223,6 +226,7 @@ export const TriviaProvider = ({ children }) => {
         maxTimer,
         playerName,
         multiplayerGame,
+        multiplayerScores,
         GetPossibleAnswers,
         GetTrivia,
         GetCurrentQuestion,
@@ -239,6 +243,7 @@ export const TriviaProvider = ({ children }) => {
         fetchData,
         FetchMultiplayerTrivia,
         setMultiplayerGame,
+        setMultiplayerScores,
     };
 
     return (

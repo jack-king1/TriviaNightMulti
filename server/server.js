@@ -24,6 +24,7 @@ io.on("connection", (socket) => {
                 username: socket.username,
                 id: socket.id,
                 isHost: socket.isHost,
+                score: 0,
             },
         });
         //console.log("Possible room names: ", io.sockets.adapter.rooms);
@@ -51,6 +52,7 @@ io.on("connection", (socket) => {
                 username: socket.username,
                 id: socket.id,
                 isHost: socket.isHost,
+                score: 0,
             },
         });
         //console.log("Possible room names: ", io.sockets.adapter.rooms);
@@ -79,6 +81,11 @@ io.on("connection", (socket) => {
     //function from a socket for a guess, verify on server to prevent syncing issues across clients.
     socket.on("user-guess", (answerguess, cb) => {
         io.in(roomId).emit("correct-guess");
+    });
+
+    socket.on("share-score", (socketPlayerWithScore, roomId) => {
+        console.log("new final score: ", socketPlayerWithScore, roomId);
+        io.in(roomId).emit("recieve-score", socketPlayerWithScore);
     });
 });
 

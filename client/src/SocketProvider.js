@@ -52,6 +52,18 @@ export const SocketProvider = ({ children }) => {
         console.log("Start game... ");
     });
 
+    socket.on("recieve-score", (playerWithScore) => {
+        if (triviaContext.multiplayerScores.length <= 0) {
+            triviaContext.setMultiplayerScores([playerWithScore]);
+        } else {
+            triviaContext.setMultiplayerScores([
+                ...triviaContext.multiplayerScores,
+                playerWithScore,
+            ]);
+        }
+        console.log("Adding to final scores: ", playerWithScore);
+    });
+
     //User Events
     //Create Room - roomId to join, function when complete.
     function CreateRoom(roomId, playerName, callback) {
@@ -66,14 +78,21 @@ export const SocketProvider = ({ children }) => {
     }
 
     function OnJoinRoomSuccess(callbackdata) {
-        //Client joined room successfully - save roosssssssssssssssssmID.
+        //Client joined room successfully
         console.log("My socket player: ", callbackdata.myplayer);
         setMySocketPlayer(callbackdata.myplayer);
     }
 
+    //start games for all clients, sent from host
     function StartGame() {
         console.log("Host starting game...");
         socket.emit("start-game", roomId);
+    }
+
+    function ShareScore(score) {
+        mySocketPlayer.score = score;
+        console.log("sharing score: ", mySocketPlayer, roomId);
+        socket.emit("share-score", mySocketPlayer, roomId);
     }
 
     function isHost() {
@@ -107,6 +126,7 @@ export const SocketProvider = ({ children }) => {
         OnJoinRoomSuccess,
         isHost,
         StartGame,
+        ShareScore,
     };
 
     return (

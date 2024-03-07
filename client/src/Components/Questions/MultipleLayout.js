@@ -7,7 +7,7 @@ function MultipleLayout(props) {
 
     return (
         <div className="flex flex-col gap-4 items-center justify-center flex-grow">
-            {console.log("Context: ", triviaContext.GetPossibleAnswers())}
+            {/*console.log("Context: ", triviaContext.GetPossibleAnswers())  */}
             <div className="grid grid-cols-4 items-center justify-center w-full gap-4">
                 {triviaContext.GetPossibleAnswers().map((answer, index) => {
                     return (

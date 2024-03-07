@@ -1,14 +1,18 @@
 import { useState, useContext, useEffect } from "react";
 import { TriviaContext } from "../../TriviaContexts";
 import AnswerBtn from "../Btns/AnswerBtn";
+import { SocketContext } from "../../SocketProvider";
 
 //end game screen where the user can reset game, new player and see the leaderboard
 function EndGameScreen() {
     const triviaContext = useContext(TriviaContext);
+    const socketContext = useContext(SocketContext);
     const [leaderboard, setLeaderboard] = useState(null);
 
     useEffect(() => {
         LoadLeaderboard();
+        //send and reieve score data.
+        socketContext.ShareScore(parseInt(triviaContext.score));
     }, []);
 
     //load leaderboar don end screen load also update and save.
@@ -92,7 +96,18 @@ function EndGameScreen() {
                     </div>
                 </div>
             ) : (
-                <div>Multiplayer leaderboard!</div>
+                <div>
+                    Multiplayer leaderboard!
+                    <div className="flex flex-col">
+                        {triviaContext.multiplayerScores.map((val, index) => {
+                            return (
+                                <div key={index} className="text-white">
+                                    {val.username}: {val.score}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
             )}
         </div>
     );
