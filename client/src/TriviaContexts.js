@@ -180,13 +180,6 @@ export const TriviaProvider = ({ children }) => {
     }
 
     function GetCurrentQuestion() {
-        //console.log("GETTING QUESTIONS: ", trivia);
-        // console.log(
-        //     "Getting Question: ",
-        //     trivia.results[playerQuestionCount],
-        //     "Count: ",
-        //     playerQuestionCount
-        // );
         try {
             return trivia.results[playerQuestionCount];
         } catch {
