@@ -42,10 +42,8 @@ function QuestionContainer(props) {
 
     return (
         <div
-            className={`text-white flex h-full ${
-                triviaContext != "GAME"
-                    ? "justify-center items-center"
-                    : "justify-start"
+            className={`text-white flex w-full h-full ${
+                triviaContext != "GAME" ? "justify-center" : "justify-start"
             }`}
         >
             {GetScreen()}

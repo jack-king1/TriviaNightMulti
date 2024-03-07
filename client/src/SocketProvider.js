@@ -9,6 +9,7 @@ export const SocketProvider = ({ children }) => {
     const [roomId, setRoomId] = useState("");
     const [playerList, setPlayerList] = useState([]);
     const [eventListeners, setEventListeners] = useState({});
+    const [mySocketId, setMySocketId] = useState("");
 
     //useEffect setup component
     useEffect(() => {}, []);
@@ -70,6 +71,7 @@ export const SocketProvider = ({ children }) => {
     // Value provided by the AuthContext
     const socketContextValue = {
         roomId,
+        playerList,
         CreateRoom,
         JoinRoom,
         setRoomId,
