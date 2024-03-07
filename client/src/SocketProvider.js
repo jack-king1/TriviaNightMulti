@@ -9,7 +9,7 @@ export const SocketProvider = ({ children }) => {
     const [roomId, setRoomId] = useState("");
     const [playerList, setPlayerList] = useState([]);
     const [eventListeners, setEventListeners] = useState({});
-    const [mySocketId, setMySocketId] = useState("");
+    const [mySocketPlayer, setMySocketPlayer] = useState("");
 
     //useEffect setup component
     useEffect(() => {}, []);
@@ -40,16 +40,23 @@ export const SocketProvider = ({ children }) => {
     //User Events
     //Create Room - roomId to join, function when complete.
     function CreateRoom(roomId, playerName, callback) {
+        setRoomId(roomId);
         socket.emit("create-room", roomId, playerName, callback);
     }
 
     function JoinRoom(roomId, playerName, callback) {
+        setRoomId(roomId);
         socket.emit("join-room", roomId, playerName, callback);
     }
 
-    function OnJoinRoomSuccess(roomId) {
+    function OnJoinRoomSuccess(callbackdata) {
         //Client joined room successfully - save roosssssssssssssssssmID.
-        setRoomId(roomId);
+        console.log("My socket player: ", callbackdata.myplayer);
+        setMySocketPlayer(callbackdata.myplayer);
+    }
+
+    function isHost() {
+        return mySocketPlayer.isHost;
     }
 
     //Subscribe to event
@@ -72,9 +79,12 @@ export const SocketProvider = ({ children }) => {
     const socketContextValue = {
         roomId,
         playerList,
+        mySocketPlayer,
         CreateRoom,
         JoinRoom,
         setRoomId,
+        OnJoinRoomSuccess,
+        isHost,
     };
 
     return (

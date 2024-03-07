@@ -29,21 +29,23 @@ function StartScreen(props) {
         //Create multiplayer room
         //create new networked player.
         //SocketController.CreateRoom(nameInput, nameInput, ChangeScreen);
-        socketContext.CreateRoom(nameInput, nameInput, ChangeScreen);
+        socketContext.CreateRoom(nameInput, nameInput, OnJoinSuccess);
     }
 
     //for when a player wants to join a friend
     function JoinMultiplayerLobby() {
         if (nameInput == null) return;
         //Join existing lobby.
-        socketContext.JoinRoom(lobbyName, nameInput, ChangeScreen);
+        socketContext.JoinRoom(lobbyName, nameInput, OnJoinSuccess);
     }
 
     //callback for when player has joined a room/lobby
-    function ChangeScreen(msg) {
+    function OnJoinSuccess(callbackdata) {
         //SocketController.OnJoinRoomSuccess(lobbyName);
-        console.log(msg);
+        console.log(callbackdata.msg);
         props.lobbyaction(nameInput);
+        console.log(callbackdata.myplayer);
+        socketContext.OnJoinRoomSuccess(callbackdata);
     }
 
     return (

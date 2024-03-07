@@ -16,34 +16,64 @@ io.on("connection", (socket) => {
         //assign socket a name and isHost
         socket.username = playerName;
         socket.isHost = true;
-        cb(`Joined ${roomId}`);
+        //Get this players socket player object
+        //Get this players socket player object
+        cb({
+            msg: `Joined ${roomId}`,
+            myplayer: {
+                username: socket.username,
+                id: socket.id,
+                isHost: socket.isHost,
+            },
+        });
         console.log("Possible room names: ", io.sockets.adapter.rooms);
 
         //get all players from room then emit to all sockets in that room
         let playerList = await GetPlayerList(roomId);
-        console.log("@playerList before emit: ", playerList);
         io.in(roomId).emit("player-list", playerList);
     });
 
     //check to see if room exists, then join it and send callback.
     socket.on("join-room", async (roomId, playerName, cb) => {
         if (!io.sockets.adapter.rooms.get(roomId)) {
-            cb(`Room ${roomId} doesn't exist.`);
+            cb({ msg: `Joined ${roomId}`, myPlayer: null });
             return;
         }
         socket.join(roomId);
         //assign socket a name and isHost
         socket.username = playerName;
         socket.isHost = false;
-        cb(`Joined ${roomId}`);
+        //Get this players socket player object
+        cb({
+            msg: `Joined ${roomId}`,
+            myplayer: {
+                username: socket.username,
+                id: socket.id,
+                isHost: socket.isHost,
+            },
+        });
         console.log("Possible room names: ", io.sockets.adapter.rooms);
         //new player has joined, sync data to all clients.
         //create player
 
         //get all players from room then emit to all sockets in that room
         let playerList = await GetPlayerList(roomId);
-        console.log("@playerList before emit: ", playerList);
         io.in(roomId).emit("player-list", playerList);
+    });
+
+    //sync questions from host to all connected room clients
+    socket.on("sync-questions", (questions) => {
+        io.in(roomId).emit("quiz-questions");
+    });
+
+    //function for host to start game for a room.
+    socket.on("start-game", async (roomId, cb) => {
+        io.in(roomId).emit("enter-game-scene");
+    });
+
+    //function from a socket for a guess, verify on server to prevent syncing issues across clients.
+    socket.on("user-guess", (answerguess, cb) => {
+        io.in(roomId).emit("correct-guess");
     });
 });
 
@@ -59,4 +89,20 @@ async function GetPlayerList(roomId) {
     });
     console.log(playerList);
     return playerList;
+}
+
+async function GetPlayer(roomId, socket) {
+    let sockets = await io.in(roomId).fetchSockets();
+    let player;
+    sockets.map((val, key) => {
+        if ((val.id = socket.id)) {
+            player = {
+                username: val.username,
+                socket: val.id,
+                isHost: val.isHost,
+            };
+        }
+    });
+    console.log("@GetPlayer: ", player);
+    return player;
 }
