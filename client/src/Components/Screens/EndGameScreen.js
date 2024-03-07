@@ -68,7 +68,7 @@ function EndGameScreen() {
                 />
             </div>
             {/*Leaderboard needs a component */}
-            {leaderboard != null ? (
+            {leaderboard != null && !triviaContext.multiplayerGame ? (
                 <div className="flex flex-col mt-3">
                     <div className="text-yellow-500 text-5xl justify-center items-center flex flex-col">
                         <div>1st</div>
@@ -91,7 +91,9 @@ function EndGameScreen() {
                         </div>
                     </div>
                 </div>
-            ) : null}
+            ) : (
+                <div>Multiplayer leaderboard!</div>
+            )}
         </div>
     );
 }

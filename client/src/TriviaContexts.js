@@ -16,6 +16,7 @@ export const TriviaProvider = ({ children }) => {
     const totalQuestionsAmount = 10;
     const [gameState, SetGameState] = useState("START");
     const [playerName, setPlayerName] = useState("");
+    const [multiplayerGame, setMultiplayerGame] = useState(false);
 
     //timers
 
@@ -24,22 +25,18 @@ export const TriviaProvider = ({ children }) => {
 
     const GAME_STATES = { START: "START", GAME: "GAME", END: "END" };
 
-    useEffect(() => {
-        // Define an async function inside the useEffect
-        setLoaded(false);
-        async function fetchData() {
-            try {
-                const response = await fetchTrivia(totalQuestionsAmount);
-                // Do something with the data
-                console.log(response);
-                setTrivia(response);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
+    async function fetchData(playerName) {
+        try {
+            const response = await fetchTrivia(totalQuestionsAmount);
+            PlayerName(playerName);
+            // Do something with the data
+            console.log(response);
+            setTrivia(response);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            return false;
         }
-        // Call the async function
-        //fetchData();
-    }, []);
+    }
 
     useEffect(() => {
         try {
@@ -50,6 +47,9 @@ export const TriviaProvider = ({ children }) => {
             ConfigurePossibleAnswers();
             setLoaded(true);
             setScore(0);
+            if (!multiplayerGame) {
+                SetGameState("GAME");
+            }
         } catch {
             console.log("Trivia is probably empty array.");
         }
@@ -222,6 +222,7 @@ export const TriviaProvider = ({ children }) => {
         gameState,
         maxTimer,
         playerName,
+        multiplayerGame,
         GetPossibleAnswers,
         GetTrivia,
         GetCurrentQuestion,
@@ -235,7 +236,9 @@ export const TriviaProvider = ({ children }) => {
         setTimeLeft,
         PlayerName,
         setTrivia,
+        fetchData,
         FetchMultiplayerTrivia,
+        setMultiplayerGame,
     };
 
     return (

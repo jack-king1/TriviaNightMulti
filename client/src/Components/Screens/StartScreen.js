@@ -28,6 +28,7 @@ function StartScreen(props) {
     //for hosting a game.
     function CreateMultiplayerLobby() {
         if (nameInput == null) return;
+        triviaContext.setMultiplayerGame(true);
         //Create multiplayer room
         //create new networked player.
         //SocketController.CreateRoom(nameInput, nameInput, ChangeScreen);
@@ -39,6 +40,7 @@ function StartScreen(props) {
     //for when a player wants to join a friend
     function JoinMultiplayerLobby() {
         if (nameInput == null) return;
+        triviaContext.setMultiplayerGame(true);
         //Join existing lobby.
         socketContext.JoinRoom(lobbyName, nameInput, OnJoinSuccess);
     }

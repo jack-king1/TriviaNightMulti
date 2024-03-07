@@ -13,9 +13,9 @@ function QuestionContainer(props) {
 
     const colours = ["green", "red", "blue", "yellow"];
 
-    function StartQuiz(playerName) {
-        triviaContext.SetGameState("GAME");
-        triviaContext.PlayerName(playerName);
+    async function StartQuiz(playerName) {
+        //load trivia questions here.
+        triviaContext.fetchData(playerName);
     }
 
     function GoToLobby(playerName) {
