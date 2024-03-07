@@ -156,7 +156,7 @@ export const TriviaProvider = ({ children }) => {
             console.log("Correct!");
             //emit event listener to trigger animatons
             emit("userGuess", [true, guess]);
-            setScore(score + 1);
+            setScore(score + timeLeft);
         } else {
             console.log(
                 "Wrong Answer! Correct Answer: ",

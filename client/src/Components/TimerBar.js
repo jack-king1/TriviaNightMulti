@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { TriviaContext } from "../TriviaContexts";
+
 function TimerBar(props) {
     const [count, setCount] = useState(props.maxTime);
     const triviaContext = useContext(TriviaContext);
@@ -21,6 +22,7 @@ function TimerBar(props) {
 
         const timer = setInterval(() => {
             setCount((prevCount) => prevCount - 1);
+            triviaContext.setTimeLeft(count);
         }, 1000);
 
         return () => clearInterval(timer); // Cleanup function
